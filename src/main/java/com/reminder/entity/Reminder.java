@@ -1,11 +1,17 @@
 package com.reminder.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users", schema = "reminder")
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "reminder", schema = "reminder")
 public class Reminder {
 
     @Id
@@ -16,7 +22,7 @@ public class Reminder {
 
     private String description;
 
-    private LocalDateTime remind;
+    private LocalDateTime remindDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

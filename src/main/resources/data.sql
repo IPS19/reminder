@@ -16,6 +16,6 @@ CREATE TABLE reminder.reminder
     id          BIGINT PRIMARY KEY,
     title       VARCHAR(255),
     description VARCHAR(4049),
-    remind      DATETIME,
+    remind      TIMESTAMP,
     user_id     BIGINT REFERENCES users (id)
 );
