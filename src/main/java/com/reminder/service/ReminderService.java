@@ -17,7 +17,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import static com.reminder.util.ConstantUtil.*;
+import static com.reminder.util.ConstantUtil.DEFAULT_PAGE_SIZE;
+import static com.reminder.util.ConstantUtil.DEFAULT_SORT;
+import static com.reminder.util.ConstantUtil.DEFAULT_TIME;
+import static com.reminder.util.ConstantUtil.MAX_DATE;
+import static com.reminder.util.ConstantUtil.MIN_DATE;
+import static com.reminder.util.ConstantUtil.getDateTimeOrder;
+import static com.reminder.util.ConstantUtil.getTitleOrder;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,19 +42,11 @@ public class ReminderService {
         return reminderRepository.save(reminder);
     }
 
-    public Page<Reminder> getSorted(String dateTime, String name, Integer currentPage) {
+    public Page<Reminder> getSorted(String dateTime, String title, Integer currentPage) {
 
-        Sort.Order dateTimeOrder = Optional.ofNullable(dateTime)
-                .map(dateDirection -> dateDirection.equals("asc") ?
-                        Sort.Order.asc("remindDateTime") :
-                        Sort.Order.desc("remindDateTime"))
-                .orElse(Sort.Order.asc("remindDateTime"));
+        Sort.Order dateTimeOrder = getDateTimeOrder(dateTime);
 
-        Sort.Order titleOrder = Optional.ofNullable(name)
-                .map(nameDirection -> nameDirection.equals("asc") ?
-                        Sort.Order.asc("title") :
-                        Sort.Order.desc("title"))
-                .orElse(Sort.Order.asc("title"));
+        Sort.Order titleOrder = getTitleOrder(title);
 
         Sort sort = Sort.by(dateTimeOrder, titleOrder);
 
