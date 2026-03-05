@@ -1,7 +1,4 @@
 spring:
-  application:
-    name: reminder
-
   jpa:
     show-sql: true
     properties:
@@ -12,8 +9,33 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: smothivan@gmail.com
+    password: ${GMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  quartz:
+#    job-store-type: memory  # или jdbc для персистентности
+    scheduler-name: myScheduler
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: clusteredScheduler
+            instanceId: AUTO
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 5
+            threadPriority: 5
+  application:
+    name: reminder
 app:
   pagination:
     default-page-size: 10
-  rest-url: /api/v1

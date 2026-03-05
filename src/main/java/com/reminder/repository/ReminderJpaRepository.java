@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface ReminderJpaRepository extends JpaRepository<Reminder, Integer> {
 
@@ -25,6 +26,13 @@ public interface ReminderJpaRepository extends JpaRepository<Reminder, Integer> 
                                @Param("endDateTime") LocalDateTime endDateTime,
                                Pageable pageRequest);
 
+    @Query("""
+            SELECT r FROM Reminder r JOIN FETCH User u
+            WHERE r.remindDateTime >= :startDateTime
+            AND r.remindDateTime <= :endDateTime
+            """)
+    List<Reminder> getRemindersForSend(@Param("startDateTime") LocalDateTime startDateTime,
+                                       @Param("endDateTime") LocalDateTime endDateTime);
 
 
     @Query("""
