@@ -39,3 +39,7 @@ spring:
 app:
   pagination:
     default-page-size: 10
+telegram:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN}
+    username: ${TELEGRAM_BOT_USERNAME}

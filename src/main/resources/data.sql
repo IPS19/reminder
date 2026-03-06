@@ -4,6 +4,9 @@ CREATE TABLE reminder.users
 (
     id BIGINT PRIMARY KEY,
     user_name VARCHAR(126),
+    email VARCHAR(100),
+    password VARCHAR(50),
+    telegram_chat_id BIGINT(50),
     role       VARCHAR(32)
 );
 

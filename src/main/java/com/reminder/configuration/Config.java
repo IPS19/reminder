@@ -40,7 +40,7 @@ public class Config {
         return TriggerBuilder.newTrigger()
                 .forJob(jobDetail())
                 .withIdentity("myTrigger", "group1")
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ?")) // каждые 5 минут
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * * * ?")) // каждую минуту
                 .build();
     }
 

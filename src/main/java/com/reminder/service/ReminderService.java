@@ -25,9 +25,9 @@ import static com.reminder.util.ConstantUtil.MIN_DATE;
 import static com.reminder.util.ConstantUtil.getDateTimeOrder;
 import static com.reminder.util.ConstantUtil.getTitleOrder;
 
+@Service
 @NoArgsConstructor
 @AllArgsConstructor
-@Service
 public class ReminderService {
 
     private AuthService authService;

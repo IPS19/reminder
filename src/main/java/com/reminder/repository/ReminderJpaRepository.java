@@ -27,13 +27,12 @@ public interface ReminderJpaRepository extends JpaRepository<Reminder, Integer> 
                                Pageable pageRequest);
 
     @Query("""
-            SELECT r FROM Reminder r JOIN FETCH User u
+            SELECT r FROM Reminder r JOIN FETCH r.user u
             WHERE r.remindDateTime >= :startDateTime
             AND r.remindDateTime <= :endDateTime
             """)
     List<Reminder> getRemindersForSend(@Param("startDateTime") LocalDateTime startDateTime,
                                        @Param("endDateTime") LocalDateTime endDateTime);
-
 
     @Query("""
             SELECT r FROM Reminder r
