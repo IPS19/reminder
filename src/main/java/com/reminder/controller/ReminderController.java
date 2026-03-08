@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,7 @@ import java.time.LocalTime;
 import static com.reminder.controller.ReminderController.REST_URL;
 
 @RestController
-@RequestMapping(REST_URL)
+@RequestMapping(value = REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class ReminderController {
 
@@ -36,7 +37,7 @@ public class ReminderController {
         this.service = service;
     }
 
-    private ReminderService service;
+    private final ReminderService service;
 
     @PostMapping
     public ResponseEntity<Reminder> create(@Valid @RequestBody ReminderRq request) {
@@ -49,8 +50,8 @@ public class ReminderController {
         return ResponseEntity.created(uriOfNewResource).body(newReminder);
     }
 
-    @PutMapping
-    public void update(@Valid @RequestBody ReminderRq request, @PathVariable int id) {
+    @PutMapping("/{id}")
+    public void update(@Valid @RequestBody ReminderRq request, @PathVariable Long id) {
         log.info("Изменено напоминание с id: {}", id);
         service.update(request, id);
     }
@@ -82,8 +83,8 @@ public class ReminderController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) {
+    public void delete(@PathVariable Long id) {
+        log.info("заспрос на удаление напоминания с id {}", id);
         service.delete(id);
-        log.info("удалено напоминание с id {}", id);
     }
 }

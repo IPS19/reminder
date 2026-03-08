@@ -1,6 +1,7 @@
 package com.reminder.configuration;
 
 import com.reminder.scheduler.ReminderSenderJob;
+import lombok.RequiredArgsConstructor;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -13,7 +14,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 @Configuration
-public class Config {
+@RequiredArgsConstructor
+public class AppConfig {
 
     @Value("${spring.mail.host}")
     String mailHost;

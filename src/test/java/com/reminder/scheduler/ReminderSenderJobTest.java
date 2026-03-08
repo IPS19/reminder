@@ -59,9 +59,9 @@ class ReminderSenderJobTest {
 
         job.executeInternal(executionContext);
 
-        verify(emailService).sendSimpleMessage(eq(USER2.getUserName()), eq(REMINDER2.getTitle()), eq(REMINDER2.getDescription()));
-        verify(emailService).sendSimpleMessage(eq(USER1.getUserName()), eq(REMINDER1.getTitle()), eq(REMINDER1.getDescription()));
-        verify(emailService).sendSimpleMessage(eq(USER3_NO_TELEGRAM.getUserName()), eq(REMINDER3.getTitle()), eq(REMINDER3.getDescription()));
+        verify(emailService).sendSimpleMessage(eq(USER2.getEmail()), eq(REMINDER2.getTitle()), eq(REMINDER2.getDescription()));
+        verify(emailService).sendSimpleMessage(eq(USER1.getEmail()), eq(REMINDER1.getTitle()), eq(REMINDER1.getDescription()));
+        verify(emailService).sendSimpleMessage(eq(USER3_NO_TELEGRAM.getEmail()), eq(REMINDER3.getTitle()), eq(REMINDER3.getDescription()));
 
         verify(reminderBot).sendMessage(eq(USER1.getTelegramChatId()), eq(REMINDER1.getTitle() + ", описание: " + REMINDER1.getDescription()));
         verify(reminderBot).sendMessage(eq(USER2.getTelegramChatId()), eq(REMINDER2.getTitle() + ", описание: " + REMINDER2.getDescription()));

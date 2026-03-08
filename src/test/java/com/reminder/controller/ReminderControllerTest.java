@@ -12,12 +12,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -36,6 +39,8 @@ class ReminderControllerTest {
     private ReminderService service;
 
     private ObjectMapper objectMapper;
+
+    private static final String SORT_URL = "/sort";
 
     @BeforeEach
     void setUp() {
@@ -59,6 +64,18 @@ class ReminderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reminderRq)))
                 .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void getSorted() throws Exception {
+        Page<Reminder> page = new PageImpl<>(List.of(new Reminder()));
+        when(service.getSorted(any(), any(), any())).thenReturn(page);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(ReminderController.REST_URL + SORT_URL)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 

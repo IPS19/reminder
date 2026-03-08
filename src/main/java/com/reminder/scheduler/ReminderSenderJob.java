@@ -30,7 +30,7 @@ public class ReminderSenderJob extends QuartzJobBean {
         List<Reminder> remindersForSend = repository.getRemindersForSend(now, now.plusSeconds(60));
 
         remindersForSend.forEach(reminder ->
-                emailService.sendSimpleMessage(reminder.getUser().getUserName(),
+                emailService.sendSimpleMessage(reminder.getUser().getEmail(),
                         reminder.getTitle(),
                         reminder.getDescription()));
 

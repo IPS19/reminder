@@ -50,29 +50,23 @@ class ReminderBotTest {
 
     @Test
     void getBotUsername_ShouldReturnCorrectUsername() {
-        // When
         String username = reminderBot.getBotUsername();
 
-        // Then
         assertEquals(botUsername, username);
     }
 
     @Test
     void onUpdateReceived_WithStartCommand_ShouldSendStartMessage() {
-        // Given
         Update update = createUpdateWithMessage("/start", 12345L);
         ReminderBot spyBot = spy(reminderBot);
 
-        // When
         spyBot.onUpdateReceived(update);
 
-        // Then
         verify(spyBot).sendMessage(eq(12345L), anyString());
     }
 
     @Test
     void onUpdateReceived_WithRegCommandAndValidEmail_ShouldBindChatId() {
-        // Given
         Long chatId = 12345L;
         String email = "test@example.com";
         Update update = createUpdateWithMessage("/reg " + email, chatId);
@@ -85,10 +79,8 @@ class ReminderBotTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        // When
         reminderBot.onUpdateReceived(update);
 
-        // Then
         verify(userRepository).findByEmail(email);
         verify(userRepository).save(argThat(savedUser ->
                 savedUser.getTelegramChatId().equals(chatId)
@@ -97,17 +89,14 @@ class ReminderBotTest {
 
     @Test
     void onUpdateReceived_WithRegCommandAndInvalidEmail_ShouldSendErrorMessage() {
-        // Given
         Long chatId = 12345L;
         String invalidEmail = "invalid-email";
         Update update = createUpdateWithMessage("/reg " + invalidEmail, chatId);
 
         ReminderBot spyBot = spy(reminderBot);
 
-        // When
         spyBot.onUpdateReceived(update);
 
-        // Then
         verify(spyBot).sendMessage(eq(chatId), eq(ReminderBot.INCORRECT_EMAIL));
         verify(userRepository, never()).findByEmail(any());
         verify(userRepository, never()).save(any());
@@ -115,7 +104,6 @@ class ReminderBotTest {
 
     @Test
     void onUpdateReceived_WithRegCommandAndNonExistentEmail_ShouldSendNotExistMessage() {
-        // Given
         Long chatId = 12345L;
         String email = "nonexistent@example.com";
         Update update = createUpdateWithMessage("/reg " + email, chatId);
@@ -124,10 +112,8 @@ class ReminderBotTest {
 
         ReminderBot spyBot = spy(reminderBot);
 
-        // When
         spyBot.onUpdateReceived(update);
 
-        // Then
         verify(spyBot).sendMessage(eq(chatId), eq(ReminderBot.EMAIL_NOT_EXIST));
         verify(userRepository).findByEmail(email);
         verify(userRepository, never()).save(any());
@@ -135,16 +121,13 @@ class ReminderBotTest {
 
     @Test
     void onUpdateReceived_WithRegCommandWithoutEmail_ShouldDoNothing() {
-        // Given
         Long chatId = 12345L;
         Update update = createUpdateWithMessage("/reg", chatId);
 
         ReminderBot spyBot = spy(reminderBot);
 
-        // When
         spyBot.onUpdateReceived(update);
 
-        // Then
         verify(spyBot, never()).sendMessage(anyLong(), anyString());
         verify(userRepository, never()).findByEmail(any());
         verify(userRepository, never()).save(any());
@@ -152,15 +135,12 @@ class ReminderBotTest {
 
     @Test
     void sendMessage_ShouldExecuteSendMessage() throws TelegramApiException {
-        // Given
         Long chatId = 12345L;
         String text = "Test message";
         ReminderBot spyBot = spy(reminderBot);
 
-        // When
         spyBot.sendMessage(chatId, text);
 
-        // Then
         verify(spyBot).execute(messageCaptor.capture());
         SendMessage capturedMessage = messageCaptor.getValue();
 
@@ -170,7 +150,6 @@ class ReminderBotTest {
 
     @Test
     void sendMessage_WhenTelegramApiException_ShouldLogError() throws TelegramApiException {
-        // Given
         Long chatId = 12345L;
         String text = "Test message";
         ReminderBot spyBot = spy(reminderBot);
@@ -178,11 +157,9 @@ class ReminderBotTest {
         doThrow(new TelegramApiException("Test exception"))
                 .when(spyBot).execute(any(SendMessage.class));
 
-        // When/Then (should not throw exception, just log)
         assertDoesNotThrow(() -> spyBot.sendMessage(chatId, text));
     }
 
-    // Вспомогательный метод для создания Update с сообщением
     private Update createUpdateWithMessage(String messageText, Long chatId) {
         Update update = new Update();
         Message message = new Message();

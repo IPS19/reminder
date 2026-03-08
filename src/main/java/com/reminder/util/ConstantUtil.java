@@ -13,6 +13,12 @@ public class ConstantUtil {
     @Value("${app.pagination.default-page-size:10}")
     public static int DEFAULT_PAGE_SIZE;
 
+    public static final String ID = "id";
+    public static final String EMAIL = "email";
+    public static final String USER_NAME = "userName";
+    public static final String GOOGLE_SUB_NUMBER = "googleSubNumber";
+    public static final String TELEGRAM_CHAT_ID = "telegramChatId";
+
     public static final Sort DEFAULT_SORT = Sort.by(Sort.Order.asc("remindDateTime"));
     public static final LocalTime DEFAULT_TIME = LocalTime.of(0, 0);
     public static final LocalDate MIN_DATE = LocalDate.of(1, 1, 1);

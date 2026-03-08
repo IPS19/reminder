@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.reminder.util.ConstantUtil.DEFAULT_PAGE_SIZE;
@@ -38,6 +39,8 @@ public class ReminderService {
 
     public Reminder saveNew(ReminderRq request) {
         Reminder reminder = mapReminder(request);
+        Long currentUserId = authService.getCurrentUserId();
+        reminder.setUser(userRepository.getReferenceById(currentUserId));
 
         return reminderRepository.save(reminder);
     }
@@ -54,7 +57,7 @@ public class ReminderService {
 
         Pageable pageRequest = PageRequest.of(page, DEFAULT_PAGE_SIZE, sort);
 
-        return reminderRepository.getList(authService.getUserId(), pageRequest);
+        return reminderRepository.getList(authService.getCurrentUserId(), pageRequest);
     }
 
     public Page<Reminder> getFiltered(LocalDate startDateRq,
@@ -72,7 +75,7 @@ public class ReminderService {
         Pageable pageRequest = PageRequest.of(page, DEFAULT_PAGE_SIZE, DEFAULT_SORT);
 
         return reminderRepository.getFiltered(
-                authService.getUserId(),
+                authService.getCurrentUserId(),
                 LocalDateTime.of(startDate, startTime),
                 LocalDateTime.of(endDate, endTime),
                 pageRequest
@@ -83,18 +86,28 @@ public class ReminderService {
 
         Pageable pageable = PageRequest.of(current, total, DEFAULT_SORT);
 
-        return reminderRepository.getList(authService.getUserId(), pageable);
+        return reminderRepository.getList(authService.getCurrentUserId(), pageable);
     }
 
     public void update(ReminderRq request, long id) {
+        checkUserOwnsReminder(id);
         Reminder reminder = mapReminder(request);
         reminder.setId(id);
 
         reminderRepository.save(reminder);
     }
 
-    public void delete(int id) {
+    public void delete(Long id) {
+        checkUserOwnsReminder(id);
         reminderRepository.deleteReminderById(id);
+    }
+
+    private void checkUserOwnsReminder(Long reminderId) {
+        Optional<Reminder> reminderToDelete = reminderRepository.findByIdWithUser(reminderId);
+        Long currentUserId = authService.getCurrentUserId();
+        if (reminderToDelete.isEmpty() || !Objects.equals(reminderToDelete.get().getUser().getId(), currentUserId)) {
+            throw new UnsupportedOperationException("У пользователя c id" + currentUserId + "нет напоминания с id " + reminderId);
+        }
     }
 
     private Reminder mapReminder(ReminderRq request) {
@@ -102,7 +115,7 @@ public class ReminderService {
                 .remindDateTime(request.getRemind())
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .user(userRepository.getReferenceById(authService.getUserId()))
+                .user(userRepository.getReferenceById(authService.getCurrentUserId()))
                 .build();
     }
 }

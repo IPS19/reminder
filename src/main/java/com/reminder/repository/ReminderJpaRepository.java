@@ -9,11 +9,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
-public interface ReminderJpaRepository extends JpaRepository<Reminder, Integer> {
+public interface ReminderJpaRepository extends JpaRepository<Reminder, Long> {
 
     @Query("DELETE FROM Reminder r WHERE r.id = :id")
-    void deleteReminderById(@Param("id") int id);
+    void deleteReminderById(@Param("id") Long id);
 
     @Query("""
             SELECT r FROM Reminder r
@@ -21,7 +22,7 @@ public interface ReminderJpaRepository extends JpaRepository<Reminder, Integer> 
             AND r.remindDateTime >= :startDateTime
             AND r.remindDateTime <= :endDateTime
             """)
-    Page<Reminder> getFiltered(@Param("userId") int userId,
+    Page<Reminder> getFiltered(@Param("userId") Long userId,
                                @Param("startDateTime") LocalDateTime startDateTime,
                                @Param("endDateTime") LocalDateTime endDateTime,
                                Pageable pageRequest);
@@ -38,6 +39,13 @@ public interface ReminderJpaRepository extends JpaRepository<Reminder, Integer> 
             SELECT r FROM Reminder r
             WHERE r.user.id = :userId
             """)
-    Page<Reminder> getList(@Param("userId") int userId,
+    Page<Reminder> getList(@Param("userId") Long userId,
                            Pageable pageRequest);
+
+    @Query("""
+            SELECT r FROM Reminder r
+            JOIN r.user
+            WHERE r.id = :id
+            """)
+    Optional<Reminder> findByIdWithUser(@Param("id") Long id);
 }

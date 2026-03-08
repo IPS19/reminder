@@ -5,14 +5,18 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users", schema = "reminder")
 public class User {
 
@@ -37,6 +41,9 @@ public class User {
 
     @Column(name = "telegram_chat_id")
     private Long telegramChatId;
+
+    @Column(name = "google_sub_number")
+    private String googleSubNumber;
 
     @Enumerated(EnumType.STRING)
     private Role role;
