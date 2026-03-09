@@ -1,6 +1,4 @@
-CREATE SCHEMA reminder;
-
-CREATE TABLE reminder.users
+CREATE TABLE users
 (
     id BIGINT PRIMARY KEY,
     user_name VARCHAR(126),
@@ -11,11 +9,11 @@ CREATE TABLE reminder.users
     role       VARCHAR(32)
 );
 
-CREATE TYPE reminder.role as ENUM(
+CREATE TYPE role as ENUM(
     'USER', 'ADMIN'
 );
 
-CREATE TABLE reminder.reminder
+CREATE TABLE reminder
 (
     id          BIGINT PRIMARY KEY,
     title       VARCHAR(255),

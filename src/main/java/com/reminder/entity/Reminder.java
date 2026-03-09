@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "reminder", schema = "reminder")
+@Table(name = "reminder")
 public class Reminder {
 
     @Id
