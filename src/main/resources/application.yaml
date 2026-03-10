@@ -5,6 +5,7 @@ spring:
       hibernate:
         format_sql: true
         default_schema: reminder
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         hbm2ddl:
           auto: validate
   liquibase:

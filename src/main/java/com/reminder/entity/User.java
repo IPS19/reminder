@@ -33,8 +33,7 @@ public class User {
     @Size(max = 128)
     private String email;
 
-    @Column(name = "password", nullable = false)
-    @NotBlank
+    @Column(name = "password")
     @Size(max = 128)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
