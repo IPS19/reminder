@@ -51,6 +51,8 @@ spring:
   application:
     name: reminder
 app:
+  rest:
+    url: "/api/v1"
   pagination:
     default-page-size: 10
 telegram:

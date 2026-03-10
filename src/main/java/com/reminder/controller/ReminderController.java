@@ -5,6 +5,7 @@ import com.reminder.model.ReminderRq;
 import com.reminder.service.ReminderService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -23,14 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static com.reminder.controller.ReminderController.REST_URL;
-
 @RestController
-@RequestMapping(value = REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "${app.rest.url}", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class ReminderController {
 
-    static final String REST_URL = "/api/v1";
+    @Value("${app.rest.url}")
+    public static String REST_URL;
 
     public ReminderController(ReminderService service) {
         this.service = service;
