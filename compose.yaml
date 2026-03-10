@@ -6,7 +6,7 @@ services:
     environment:
       # Задаем переменные окружения для создания БД и пользователя
       POSTGRES_DB: reminder_db      # Имя базы данных
-      POSTGRES_USER: ${DB_USERNAME}     # Имя пользователя
+      POSTGRES_USER: ${DB_USERNAME}     # Имя пользователя - не цепляет через ${DB_USERNAME} и файл env
       POSTGRES_PASSWORD: ${DB_PASSWORD} # Пароль
     ports:
       - "5433:5432" # Пробрасываем порт: внешний_порт:внутренний_порт
@@ -14,6 +14,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data # Том для сохранения данных БД между запусками
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
     healthcheck: # Проверка здоровья, чтобы приложение ждало готовую БД
       test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d reminder_db"]
       interval: 10s

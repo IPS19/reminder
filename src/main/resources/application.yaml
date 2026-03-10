@@ -4,7 +4,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: reminder
+        hbm2ddl:
+          auto: validate
+  liquibase:
+    default-schema: reminder  # все таблицы Liquibase и твои будут здесь
+    liquibase-schema: reminder  # служебные таблицы тоже будут в reminder
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
