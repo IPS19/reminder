@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -43,11 +42,8 @@ public class ReminderController {
     public ResponseEntity<Reminder> create(@Valid @RequestBody ReminderRq request) {
         Reminder newReminder = service.saveNew(request);
         log.info("Добавлено новое напоминание");
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL + "/{id}")
-                .buildAndExpand(newReminder.getId()).toUri();
 
-        return ResponseEntity.created(uriOfNewResource).body(newReminder);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newReminder);
     }
 
     @PutMapping("/{id}")
