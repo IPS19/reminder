@@ -1,9 +1,52 @@
 services:
+  # Сервис базы данных PostgreSQL
   postgres:
-    image: 'postgres:latest'
+    image: postgres:17.4 # Используем официальный образ PostgreSQL 15
+    container_name: reminder-db # Имя контейнера для удобства
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      # Задаем переменные окружения для создания БД и пользователя
+      POSTGRES_DB: reminder_db      # Имя базы данных
+      POSTGRES_USER: ${DB_USERNAME}     # Имя пользователя - не цепляет через ${DB_USERNAME} и файл env
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # Пароль
     ports:
-      - '5432'
+      - "5433:5432" # Пробрасываем порт: внешний_порт:внутренний_порт
+      # Локально будешь подключаться к localhost:5433, чтобы не конфликтовать с возможным локально установленным PostgreSQL на 5432 порту.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Том для сохранения данных БД между запусками
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    healthcheck: # Проверка здоровья, чтобы приложение ждало готовую БД
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d reminder_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Сервис Spring Boot приложения reminder
+  app:
+    build: . # Говорит: "Собери образ из Dockerfile, который лежит в текущей папке"
+    container_name: reminder-app
+    ports:
+      - "8080:8080" # Пробрасываем порт приложения
+    environment:
+      # Передаем переменные окружения, которые мы указали в application.properties
+      DB_URL: jdbc:postgresql://postgres:5432/reminder_db
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      # Gmail для отправки писем
+      GMAIL_PASSWORD: ${GMAIL_PASSWORD}
+
+      # OAuth2 Google
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+
+      # Telegram Bot
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME}
+    depends_on:
+      postgres:
+        condition: service_healthy
+# Определяем том в конце файла - ЭТО ВАЖНО!
+volumes:
+  postgres_data:
