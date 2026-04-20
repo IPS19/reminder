@@ -1,11 +1,12 @@
 package com.reminder.service;
 
 import com.reminder.entity.Reminder;
+import com.reminder.model.AuthUser;
 import com.reminder.model.ReminderRq;
 import com.reminder.repository.ReminderJpaRepository;
 import com.reminder.repository.UserJpaRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +19,6 @@ import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.reminder.util.ConstantUtil.DEFAULT_PAGE_SIZE;
 import static com.reminder.util.ConstantUtil.DEFAULT_SORT;
 import static com.reminder.util.ConstantUtil.DEFAULT_TIME;
 import static com.reminder.util.ConstantUtil.MAX_DATE;
@@ -27,19 +27,18 @@ import static com.reminder.util.ConstantUtil.getDateTimeOrder;
 import static com.reminder.util.ConstantUtil.getTitleOrder;
 
 @Service
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReminderService {
 
-    private AuthService authService;
+    private final ReminderJpaRepository reminderRepository;
 
-    private ReminderJpaRepository reminderRepository;
-
-    private UserJpaRepository userRepository;
+    private final UserJpaRepository userRepository;
+    @Value("${app.pagination.default-page-size:10}")
+    public int DEFAULT_PAGE_SIZE;
 
     public Reminder saveNew(ReminderRq request) {
         Reminder reminder = mapReminder(request);
-        Long currentUserId = authService.getCurrentUserId();
+        Long currentUserId = AuthUser.get().id();
         reminder.setUser(userRepository.getReferenceById(currentUserId));
 
         return reminderRepository.save(reminder);
@@ -53,11 +52,12 @@ public class ReminderService {
 
         Sort sort = Sort.by(dateTimeOrder, titleOrder);
 
-        Integer page = Optional.ofNullable(currentPage).orElse(1);
+        Integer page = Optional.ofNullable(currentPage).orElse(0);
 
         Pageable pageRequest = PageRequest.of(page, DEFAULT_PAGE_SIZE, sort);
 
-        return reminderRepository.getList(authService.getCurrentUserId(), pageRequest);
+        Page<Reminder> list = reminderRepository.getList(AuthUser.get().id(), pageRequest);
+        return list;
     }
 
     public Page<Reminder> getFiltered(LocalDate startDateRq,
@@ -75,7 +75,7 @@ public class ReminderService {
         Pageable pageRequest = PageRequest.of(page, DEFAULT_PAGE_SIZE, DEFAULT_SORT);
 
         return reminderRepository.getFiltered(
-                authService.getCurrentUserId(),
+                AuthUser.get().id(),
                 LocalDateTime.of(startDate, startTime),
                 LocalDateTime.of(endDate, endTime),
                 pageRequest
@@ -86,7 +86,7 @@ public class ReminderService {
 
         Pageable pageable = PageRequest.of(current, total, DEFAULT_SORT);
 
-        return reminderRepository.getList(authService.getCurrentUserId(), pageable);
+        return reminderRepository.getList(AuthUser.get().id(), pageable);
     }
 
     public void update(ReminderRq request, long id) {
@@ -104,7 +104,7 @@ public class ReminderService {
 
     private void checkUserOwnsReminder(Long reminderId) {
         Optional<Reminder> reminderToDelete = reminderRepository.findByIdWithUser(reminderId);
-        Long currentUserId = authService.getCurrentUserId();
+        Long currentUserId = AuthUser.get().id();
         if (reminderToDelete.isEmpty() || !Objects.equals(reminderToDelete.get().getUser().getId(), currentUserId)) {
             throw new UnsupportedOperationException("У пользователя c id" + currentUserId + "нет напоминания с id " + reminderId);
         }
@@ -115,7 +115,7 @@ public class ReminderService {
                 .remindDateTime(request.getRemind())
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .user(userRepository.getReferenceById(authService.getCurrentUserId()))
+                .user(userRepository.getReferenceById(AuthUser.get().id()))
                 .build();
     }
 }

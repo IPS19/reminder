@@ -11,8 +11,11 @@ spring:
   liquibase:
     default-schema: reminder  # все таблицы Liquibase и твои будут здесь
     liquibase-schema: reminder  # служебные таблицы тоже будут в reminder
+#    url: ${DB_URL}
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   datasource:
-    url: ${DB_URL}
+#    url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   mail:
@@ -59,3 +62,16 @@ telegram:
   bot:
     token: ${TELEGRAM_BOT_TOKEN}
     username: ${TELEGRAM_BOT_USERNAME}
+
+management: #Корневой раздел для настройки всех management-функций Spring Boot Actuator
+  endpoints: #Секция конфигурации эндпоинтов (HTTP-точек доступа), которые Actuator предоставляет для мониторинга и управления приложением
+    web: #Настройка曝光 эндпоинтов через веб (HTTP). Альтернативы — JMX, SSH
+      exposure: # какие эндпоинты публикуются наружу
+        include: health,info,prometheus #Список эндпоинтов, которые нужно включить
+        #health — показывает статус приложения и всех его зависимостей
+        #info — выдаёт произвольную информацию о приложении
+        #prometheus — эндпоинт, который отдаёт метрики в формате, понятном Prometheus
+  prometheus: #конфигурации конкретно для Prometheus-экспорта
+    metrics:
+      export:
+        enabled: true #С true — эндпоинт /actuator/prometheus начинает работать (стоит по дефлоту)

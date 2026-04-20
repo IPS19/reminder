@@ -1,25 +1,24 @@
 package com.reminder.service;
 
+import com.reminder.model.AuthUser;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import static java.util.Objects.requireNonNull;
 
 @Service
 public class AuthService {
-    public OAuth2User getCurrentOAuth2User() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Object principal = authentication.getPrincipal();
-
-        if (!(principal instanceof OAuth2User)) {
-            throw new RuntimeException("Текущий пользователь не является OAuth2 пользователем");
+    public static AuthUser safeGet() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return null;
         }
-
-        return (OAuth2User) principal;
+        return (auth.getPrincipal() instanceof AuthUser au) ? au : null;
     }
 
-    public Long getCurrentUserId() {
-        OAuth2User user = getCurrentOAuth2User();
-        return user.getAttribute("id");
+    public static AuthUser get() {
+        return requireNonNull(safeGet(), "No authorized user found");
     }
+
 }

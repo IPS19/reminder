@@ -76,12 +76,12 @@ class ReminderBotTest {
                 .email(email)
                 .build();
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         reminderBot.onUpdateReceived(update);
 
-        verify(userRepository).findByEmail(email);
+        verify(userRepository).findByEmailIgnoreCase(email);
         verify(userRepository).save(argThat(savedUser ->
                 savedUser.getTelegramChatId().equals(chatId)
         ));
@@ -98,7 +98,7 @@ class ReminderBotTest {
         spyBot.onUpdateReceived(update);
 
         verify(spyBot).sendMessage(eq(chatId), eq(ReminderBot.INCORRECT_EMAIL));
-        verify(userRepository, never()).findByEmail(any());
+        verify(userRepository, never()).findByEmailIgnoreCase(any());
         verify(userRepository, never()).save(any());
     }
 
@@ -108,14 +108,14 @@ class ReminderBotTest {
         String email = "nonexistent@example.com";
         Update update = createUpdateWithMessage("/reg " + email, chatId);
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.empty());
 
         ReminderBot spyBot = spy(reminderBot);
 
         spyBot.onUpdateReceived(update);
 
         verify(spyBot).sendMessage(eq(chatId), eq(ReminderBot.EMAIL_NOT_EXIST));
-        verify(userRepository).findByEmail(email);
+        verify(userRepository).findByEmailIgnoreCase(email);
         verify(userRepository, never()).save(any());
     }
 
@@ -129,7 +129,7 @@ class ReminderBotTest {
         spyBot.onUpdateReceived(update);
 
         verify(spyBot, never()).sendMessage(anyLong(), anyString());
-        verify(userRepository, never()).findByEmail(any());
+        verify(userRepository, never()).findByEmailIgnoreCase(any());
         verify(userRepository, never()).save(any());
     }
 

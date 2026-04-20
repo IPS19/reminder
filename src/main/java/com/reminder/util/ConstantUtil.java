@@ -10,8 +10,6 @@ import java.util.Optional;
 
 @UtilityClass
 public class ConstantUtil {
-    @Value("${app.pagination.default-page-size:10}")
-    public static int DEFAULT_PAGE_SIZE;
 
     public static final String ID = "id";
     public static final String EMAIL = "email";

@@ -81,7 +81,7 @@ public class ReminderBot extends TelegramLongPollingBot {
             sendMessage(chatId, INCORRECT_EMAIL);
             return;
         }
-        Optional<User> userOp = userRepository.findByEmail(email);
+        Optional<User> userOp = userRepository.findByEmailIgnoreCase(email);
         if (userOp.isPresent()) {
             User user = userOp.get();
             log.info("Сохранение chatId: {} для пользователя {} c email: {}", chatId, user.getId(), email);

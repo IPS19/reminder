@@ -7,13 +7,14 @@ import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @UtilityClass
 public class TestUtil {
     public static final User USER1 = User.builder()
             .id(1L)
             .userName("user1")
-            .role(Role.USER)
+            .role(Set.of(Role.USER))
             .password("password1")
             .email("user1@email.com")
             .telegramChatId(1L)
@@ -21,7 +22,7 @@ public class TestUtil {
     public static final User USER2 = User.builder()
             .id(1L)
             .userName("user2")
-            .role(Role.USER)
+            .role(Set.of(Role.USER))
             .password("password2")
             .email("user2@email.com")
             .telegramChatId(2L)
@@ -30,7 +31,7 @@ public class TestUtil {
     public static final User USER3_NO_TELEGRAM = User.builder()
             .id(1L)
             .userName("user2")
-            .role(Role.USER)
+            .role(Set.of(Role.USER))
             .password("password2")
             .email("user2@email.com")
             .build();

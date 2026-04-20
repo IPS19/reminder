@@ -9,9 +9,6 @@ import java.util.Optional;
 
 public interface UserJpaRepository extends JpaRepository<User, Long> {
 
-    @Query("SELECT u FROM User u WHERE u.email =: email")
-    Optional<User> findByEmail(@Param("email") String email);
-
-    @Query("SELECT u FROM User u WHERE u.googleSubNumber =: googleSubNumber")
-    Optional<User> findUserBySubNumber(@Param("googleSubNumber") String googleSubNumber);
+    @Query("SELECT u FROM User u WHERE u.email = LOWER(:email)")
+    Optional<User> findByEmailIgnoreCase(@Param("email") String email);
 }

@@ -5,12 +5,17 @@ CREATE TABLE IF NOT EXISTS reminder.users
     user_name VARCHAR(126),
     email VARCHAR(100) UNIQUE,
     password VARCHAR(50),
-    telegram_chat_id BIGINT,
-    google_sub_number VARCHAR(256) UNIQUE,
-    role       VARCHAR(32)
+    telegram_chat_id BIGINT
 );
 
 --changeset sarzhin:2
+CREATE TABLE IF NOT EXISTS reminder.user_role(
+    user_id  BIGINT REFERENCES reminder.users(id) ON DELETE CASCADE,
+    role VARCHAR(20),
+    PRIMARY KEY (user_id, role)
+);
+
+--changeset sarzhin:3
 CREATE TABLE IF NOT EXISTS reminder.reminder
 (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
