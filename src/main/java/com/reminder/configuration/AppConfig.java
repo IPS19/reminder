@@ -42,8 +42,7 @@ public class AppConfig {
         return TriggerBuilder.newTrigger()
                 .forJob(jobDetail())
                 .withIdentity("myTrigger", "group1")
-//                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * * * ?")) // каждую минуту
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/15 * * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * * * ?")) // каждую минуту
                 .build();
     }
 

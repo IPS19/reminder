@@ -24,13 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static com.reminder.controller.ReminderController.REST_URL;
+
 @RestController
-@RequestMapping(value = "${app.rest.url}", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class ReminderController {
 
-    @Value("${app.rest.url}")
-    public static String REST_URL;
+    static final String REST_URL = "/api/v1";
 
     public ReminderController(ReminderService service) {
         this.service = service;

@@ -1,4 +1,4 @@
-# Стадия 1: Сборка приложения
+# Стадия 1: Сборка приложения (builder - название стадии)
 FROM maven:3.9.9-eclipse-temurin-21 AS builder
 
 WORKDIR /build

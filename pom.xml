@@ -80,7 +80,6 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>4.0.5</version>
 		</dependency>
-
 <!--Micrometer — это фасад для метрик (как SLF4J для логов)-->
 <!--micrometer-registry-prometheus — это адаптер, который отдаёт метрики в формате, понятном Prometheus-->
 		<dependency>
@@ -88,6 +87,12 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 			<version>1.16.4</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

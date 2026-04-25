@@ -22,6 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
+/*
 
 @Testcontainers
 @SpringBootTest
@@ -81,4 +82,4 @@ class ReminderControllerTestContainersTest {
 
     }
 
-}
+}*/

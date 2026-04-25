@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -56,9 +57,10 @@ class ReminderBotTest {
     }
 
     @Test
-    void onUpdateReceived_WithStartCommand_ShouldSendStartMessage() {
+    void onUpdateReceived_WithStartCommand_ShouldSendStartMessage() throws TelegramApiException {
         Update update = createUpdateWithMessage("/start", 12345L);
         ReminderBot spyBot = spy(reminderBot);
+        doReturn(new Message()).when(spyBot).execute(any(SendMessage.class));
 
         spyBot.onUpdateReceived(update);
 
@@ -88,12 +90,13 @@ class ReminderBotTest {
     }
 
     @Test
-    void onUpdateReceived_WithRegCommandAndInvalidEmail_ShouldSendErrorMessage() {
+    void onUpdateReceived_WithRegCommandAndInvalidEmail_ShouldSendErrorMessage() throws TelegramApiException {
         Long chatId = 12345L;
         String invalidEmail = "invalid-email";
         Update update = createUpdateWithMessage("/reg " + invalidEmail, chatId);
 
         ReminderBot spyBot = spy(reminderBot);
+        doReturn(new Message()).when(spyBot).execute(any(SendMessage.class));
 
         spyBot.onUpdateReceived(update);
 
@@ -103,7 +106,7 @@ class ReminderBotTest {
     }
 
     @Test
-    void onUpdateReceived_WithRegCommandAndNonExistentEmail_ShouldSendNotExistMessage() {
+    void onUpdateReceived_WithRegCommandAndNonExistentEmail_ShouldSendNotExistMessage() throws TelegramApiException {
         Long chatId = 12345L;
         String email = "nonexistent@example.com";
         Update update = createUpdateWithMessage("/reg " + email, chatId);
@@ -111,6 +114,7 @@ class ReminderBotTest {
         when(userRepository.findByEmailIgnoreCase(email)).thenReturn(Optional.empty());
 
         ReminderBot spyBot = spy(reminderBot);
+        doReturn(new Message()).when(spyBot).execute(any(SendMessage.class));
 
         spyBot.onUpdateReceived(update);
 
@@ -138,6 +142,7 @@ class ReminderBotTest {
         Long chatId = 12345L;
         String text = "Test message";
         ReminderBot spyBot = spy(reminderBot);
+        doReturn(new Message()).when(spyBot).execute(any(SendMessage.class));
 
         spyBot.sendMessage(chatId, text);
 
