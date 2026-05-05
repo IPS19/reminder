@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS reminder.users
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_name VARCHAR(126),
     email VARCHAR(100) UNIQUE,
-    password VARCHAR(50),
+    password VARCHAR(70),
     telegram_chat_id BIGINT
 );
 

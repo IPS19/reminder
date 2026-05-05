@@ -13,16 +13,16 @@ import java.util.Set;
 public class TestUtil {
     public static final User USER1 = User.builder()
             .id(1L)
-            .userName("user1")
-            .role(Set.of(Role.USER))
+            .name("user1")
+            .roles(Set.of(Role.USER))
             .password("password1")
             .email("user1@email.com")
             .telegramChatId(1L)
             .build();
     public static final User USER2 = User.builder()
             .id(1L)
-            .userName("user2")
-            .role(Set.of(Role.USER))
+            .name("user2")
+            .roles(Set.of(Role.USER))
             .password("password2")
             .email("user2@email.com")
             .telegramChatId(2L)
@@ -30,8 +30,8 @@ public class TestUtil {
 
     public static final User USER3_NO_TELEGRAM = User.builder()
             .id(1L)
-            .userName("user2")
-            .role(Set.of(Role.USER))
+            .name("user2")
+            .roles(Set.of(Role.USER))
             .password("password2")
             .email("user2@email.com")
             .build();

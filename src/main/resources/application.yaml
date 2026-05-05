@@ -1,4 +1,8 @@
 spring:
+  data:
+    redis:
+      host: redis
+      port: 6379
   jpa:
     show-sql: true
     properties:
@@ -43,14 +47,6 @@ spring:
             class: org.quartz.simpl.SimpleThreadPool
             threadCount: 5
             threadPriority: 5
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-            scope: profile, email
   application:
     name: reminder
 app:
@@ -72,4 +68,12 @@ management: #Корневой раздел для настройки всех ma
   prometheus: #конфигурации конкретно для Prometheus-экспорта
     metrics:
       export:
-        enabled: true #С true — эндпоинт /actuator/prometheus начинает работать (стоит по дефлоту)
+        enabled: true # С true — эндпоинт /actuator/prometheus начинает работать (стоит по дефлоту)
+logging:
+  level:
+    org:
+      springframework:
+        security:
+#          authentication: DEBUG
+#    org.springframework.session: DEBUG
+#    org.springframework.data.redis: DEBUG

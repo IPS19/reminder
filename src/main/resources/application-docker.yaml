@@ -1,5 +1,29 @@
 spring:
+  session:
+    store-type: redis
+    redis:
+      namespace: spring:session
+      flush-mode: on_save
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      database: ${SPRING_DATA_REDIS_DATABASE:0}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
   datasource:
     url: jdbc:postgresql://postgres:5432/reminder_db
   liquibase:
     url: jdbc:postgresql://postgres:5432/reminder_db
+server:
+  servlet:
+    session:
+      timeout: 72h  # Время жизни сессии
+      cookie:
+        http-only: true
+        secure: false  # В dev-окружении false, в проде true
+        same-site: lax

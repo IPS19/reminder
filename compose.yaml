@@ -14,9 +14,24 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data # Том для сохранения данных БД между запусками
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-
     healthcheck: # Проверка здоровья, чтобы приложение ждало готовую БД
       test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d reminder_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis для хранения сессий
+  redis:
+    image: redis:7.4-alpine  # Легковесная alpine-версия
+    container_name: reminder-redis
+    ports:
+      - "6379:6379"  # Пробрасываем порт для отладки (опционально)
+    command: redis-server --appendonly yes  # Включаем持久化 (AOF)
+    volumes:
+      - redis_data:/data  # Сохраняем данные сессий между перезапусками
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,12 +50,14 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       SPRING_PROFILES_ACTIVE: docker
 
+      # Redis подключение
+      SPRING_DATA_REDIS_HOST: redis  # Имя сервиса в compose
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_DATABASE: 0
+      SPRING_SESSION_STORE_TYPE: redis
+
       # Gmail для отправки писем
       GMAIL_PASSWORD: ${GMAIL_PASSWORD}
-
-      # OAuth2 Google
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
 
       # Telegram Bot
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
@@ -81,5 +98,6 @@ services:
 # Определяем том в конце файла - ЭТО ВАЖНО!
 volumes:
   postgres_data:
+  redis_data:
   prometheus_data:
   grafana_data:

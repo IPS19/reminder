@@ -71,7 +71,7 @@ public class ReminderService {
         LocalDate endDate = Optional.ofNullable(endDateRq).orElse(MAX_DATE);
         LocalTime endTime = Optional.ofNullable(endTimeRq).orElse(DEFAULT_TIME);
 
-        Integer page = Optional.ofNullable(currentPage).orElse(1);
+        Integer page = Optional.ofNullable(currentPage).orElse(0);
         Pageable pageRequest = PageRequest.of(page, DEFAULT_PAGE_SIZE, DEFAULT_SORT);
 
         return reminderRepository.getFiltered(
