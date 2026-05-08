@@ -68,7 +68,5 @@ public class ReminderSenderJob extends QuartzJobBean {
                     telegramSendFutures.add(mailSendFuture);
                 });
         CompletableFuture.allOf(telegramSendFutures.toArray(new CompletableFuture[0])).join();
-
-
     }
 }

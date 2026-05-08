@@ -1,10 +1,12 @@
 package com.reminder.controller;
 
 import com.reminder.entity.Reminder;
+import com.reminder.model.AuthUser;
 import com.reminder.model.ReminderRq;
 import com.reminder.service.ReminderService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -38,10 +40,12 @@ public class ReminderController {
 
     private final ReminderService service;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Reminder> create(@Valid @RequestBody ReminderRq request) {
+        MDC.put("userId", "userId: " + AuthUser.get().id().toString());
+
         Reminder newReminder = service.saveNew(request);
-        log.info("Добавлено новое напоминание");
+        log.info("Добавлено новое напоминание пользователем с id {}", newReminder.getUser().getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(newReminder);
     }

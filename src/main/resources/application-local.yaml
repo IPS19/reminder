@@ -1,4 +1,7 @@
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.data.redis.autoconfigure.DataRedisAutoConfiguration
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
   liquibase:

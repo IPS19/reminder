@@ -6,6 +6,8 @@ import com.reminder.model.ReminderRq;
 import com.reminder.repository.ReminderJpaRepository;
 import com.reminder.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +28,7 @@ import static com.reminder.util.ConstantUtil.MIN_DATE;
 import static com.reminder.util.ConstantUtil.getDateTimeOrder;
 import static com.reminder.util.ConstantUtil.getTitleOrder;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReminderService {
@@ -40,6 +43,7 @@ public class ReminderService {
         Reminder reminder = mapReminder(request);
         Long currentUserId = AuthUser.get().id();
         reminder.setUser(userRepository.getReferenceById(currentUserId));
+        log.info("добавляем новое напоминание - лог с сервиса пум пум");
 
         return reminderRepository.save(reminder);
     }
@@ -56,7 +60,9 @@ public class ReminderService {
 
         Pageable pageRequest = PageRequest.of(page, DEFAULT_PAGE_SIZE, sort);
 
-        Page<Reminder> list = reminderRepository.getList(AuthUser.get().id(), pageRequest);
+        Long id = AuthUser.get().id();
+        Page<Reminder> list = reminderRepository.getList(id, pageRequest);
+        MDC.put("userId", id.toString());
         return list;
     }
 
