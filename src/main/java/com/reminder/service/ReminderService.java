@@ -1,5 +1,6 @@
 package com.reminder.service;
 
+import com.reminder.annotation.CheckUserOwnsReminder;
 import com.reminder.entity.Reminder;
 import com.reminder.model.AuthUser;
 import com.reminder.model.ReminderRq;
@@ -95,25 +96,17 @@ public class ReminderService {
         return reminderRepository.getList(AuthUser.get().id(), pageable);
     }
 
+    @CheckUserOwnsReminder(reminderIdParam = "id")
     public void update(ReminderRq request, long id) {
-        checkUserOwnsReminder(id);
         Reminder reminder = mapReminder(request);
         reminder.setId(id);
 
         reminderRepository.save(reminder);
     }
 
+    @CheckUserOwnsReminder(reminderIdParam = "id")
     public void delete(Long id) {
-        checkUserOwnsReminder(id);
         reminderRepository.deleteReminderById(id);
-    }
-
-    private void checkUserOwnsReminder(Long reminderId) {
-        Optional<Reminder> reminderToDelete = reminderRepository.findByIdWithUser(reminderId);
-        Long currentUserId = AuthUser.get().id();
-        if (reminderToDelete.isEmpty() || !Objects.equals(reminderToDelete.get().getUser().getId(), currentUserId)) {
-            throw new UnsupportedOperationException("У пользователя c id" + currentUserId + "нет напоминания с id " + reminderId);
-        }
     }
 
     private Reminder mapReminder(ReminderRq request) {

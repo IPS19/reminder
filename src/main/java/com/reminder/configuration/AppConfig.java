@@ -10,6 +10,7 @@ import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -17,6 +18,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @Configuration
 @EnableRedisHttpSession
 @RequiredArgsConstructor
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class AppConfig {
 
     @Value("${spring.mail.host}")
@@ -45,7 +47,7 @@ public class AppConfig {
                 .forJob(jobDetail())
                 .withIdentity("myTrigger", "group1")
 //                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/1 * * * ?")) // каждую минуту
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/20 * * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/40 * * * ?"))
                 .build();
     }
 

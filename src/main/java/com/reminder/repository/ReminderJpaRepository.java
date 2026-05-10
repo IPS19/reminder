@@ -48,7 +48,7 @@ public interface ReminderJpaRepository extends JpaRepository<Reminder, Long> {
 
     @Query("""
             SELECT r FROM Reminder r
-            JOIN r.user
+            JOIN FETCH r.user
             WHERE r.id = :id
             """)
     Optional<Reminder> findByIdWithUser(@Param("id") Long id);
