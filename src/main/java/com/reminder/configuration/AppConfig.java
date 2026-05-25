@@ -16,7 +16,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @Configuration
-@EnableRedisHttpSession
+//@EnableRedisHttpSession
 @RequiredArgsConstructor
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class AppConfig {
