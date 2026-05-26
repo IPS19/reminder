@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.reminder.config.TestSecurityConfig;
 import com.reminder.entity.Reminder;
+import com.reminder.entity.Role;
+import com.reminder.entity.User;
+import com.reminder.model.AuthUser;
 import com.reminder.model.ReminderRq;
 import com.reminder.service.ReminderService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,15 +18,19 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,14 +60,17 @@ class ReminderControllerTest {
     void createNew() throws Exception {
         ReminderRq reminderRq = ReminderRq.builder()
                 .remind(TEST_DATE_TIME)
-                .description("")
-                .title("")
+                .description("new_reminder_desctiption")
+                .title("new_reminder_title")
                 .build();
 
-        when(service.saveNew(any())).thenReturn(new Reminder());
+        Reminder reminder = new Reminder();
+        reminder.setUser(user());
+        when(service.saveNew(any())).thenReturn(reminder);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post(ReminderController.REST_URL)
+                        .with(authentication(auth()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reminderRq)))
                 .andExpect(status().isCreated())
@@ -79,4 +89,18 @@ class ReminderControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
+    private Authentication auth() {
+        User user = user();
+        AuthUser principal = new AuthUser(user);
+        return new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
+    }
+
+    private User user() {
+        return User.builder()
+                .id(1L)
+                .email("test@test.com")
+                .password("password")
+                .roles(Set.of(Role.USER))
+                .build();
+    }
 }

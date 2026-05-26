@@ -6,6 +6,7 @@ import com.reminder.model.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ReminderNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleReminderNotFound(ReminderNotFoundException ex) {
         return ErrorResponse.builder()
                 .statusCode(HttpStatus.NOT_FOUND.value())
@@ -25,6 +27,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ReminderOwnerConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleReminderOwnerConflict(ReminderOwnerConflictException ex) {
         return ErrorResponse.builder()
                 .statusCode(HttpStatus.CONFLICT.value())
@@ -35,6 +38,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleAllOtherErrors(Exception ex) {
         return ErrorResponse.builder()
                 .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
